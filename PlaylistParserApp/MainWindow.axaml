@@ -1,0 +1,45 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:viewModels="clr-namespace:PlaylistParserApp.ViewModels"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="PlaylistParserApp.MainWindow"
+        Title="PlaylistParserApp">
+	<Window.DataContext>
+		<viewModels:MainWindowViewModel/>
+	</Window.DataContext>
+	<Grid ShowGridLines="True">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition/>
+		</Grid.RowDefinitions>
+		<StackPanel Grid.Row="0">
+			<Label Content="Enter playlist URL" Margin="10"/>
+			<StackPanel Orientation="Horizontal">
+				<TextBox  Margin="10" Height="16" Width="250" HorizontalAlignment="Left" Text="{Binding EnteredURL}"/>
+				<Button Content="Parse Url" HorizontalContentAlignment="Center" Width="100" Command="{Binding ButtonParsePlaylist}"/>
+			</StackPanel>
+		</StackPanel>
+		<StackPanel Grid.Row="1">
+			<StackPanel Orientation="Horizontal">
+				<Image Width="100" Height="100" Source="{Binding PlaylistCover}"/>
+				<StackPanel Orientation="Vertical" DataContext="{Binding PlayList}">
+					<Label Content="{Binding Path= PlaylistName}" FontSize="20"/>
+					<Label Content="{Binding Path= Description}"/>
+				</StackPanel>
+			</StackPanel>
+			<ListBox Items="{Binding PlayList.Songs}">
+				<ListBox.ItemTemplate>
+					<DataTemplate>
+						<StackPanel Orientation="Horizontal">
+							<TextBlock Text="{Binding Path=SongName}"/>
+							<TextBlock Text="{Binding Path=Author}" Margin="30,0,0,0"/>
+							<TextBlock Text="{Binding Path=Duration}" Margin="30,0,0,0"/>
+						</StackPanel>
+					</DataTemplate>
+				</ListBox.ItemTemplate>
+			</ListBox>
+		</StackPanel>
+	</Grid>
+</Window>
