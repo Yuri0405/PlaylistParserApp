@@ -29,14 +29,29 @@
 					<Label Content="{Binding Path= Description}"/>
 				</StackPanel>
 			</StackPanel>
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+					<ColumnDefinition/>
+				</Grid.ColumnDefinitions>
+				<Label Content="Song Name" Grid.Column="0"/>
+				<Label Content="Author" Grid.Column="1" Margin="30,0,0,0"/>
+				<Label Content="Duration" Grid.Column="2" Margin="30,0,0,0"/>
+			</Grid>
 			<ListBox Items="{Binding PlayList.Songs}">
 				<ListBox.ItemTemplate>
 					<DataTemplate>
-						<StackPanel Orientation="Horizontal">
-							<TextBlock Text="{Binding Path=SongName}"/>
-							<TextBlock Text="{Binding Path=Author}" Margin="30,0,0,0"/>
-							<TextBlock Text="{Binding Path=Duration}" Margin="30,0,0,0"/>
-						</StackPanel>
+						<Grid>
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+								<ColumnDefinition/>
+							</Grid.ColumnDefinitions>
+							<TextBlock Text="{Binding Path=SongName}" Grid.Column="0"/>
+							<TextBlock Text="{Binding Path=Author}" Margin="30,0,0,0" Grid.Column="1"/>
+							<TextBlock Text="{Binding Path=Duration}" Margin="30,0,0,0" Grid.Column="2"/>
+						</Grid>
 					</DataTemplate>
 				</ListBox.ItemTemplate>
 			</ListBox>
