@@ -22,14 +22,15 @@ namespace PlaylistParserApp.Services
         {
             _doc = _web.Load(url);
             Playlist playlist = new Playlist();
-            playlist.PlaylistName = _doc.DocumentNode.SelectSingleNode("//*[@id=\"playlistsDetails\"]/div/article[1]/div/section[2]/h2").InnerText;
-            playlist.Description = _doc.DocumentNode.SelectSingleNode("//*[@id=\"playlistsDetails\"]/div/article[1]/div/section[2]/div[1]/span[1]").InnerText;
+            playlist.PlaylistName = _doc.DocumentNode.SelectSingleNode("//*[@id='page-container__first-linked-element']").InnerText;
+            playlist.Description = _doc.DocumentNode.SelectSingleNode("//*[@class='truncated-content-container']/span/p").InnerText;
             playlist.Description = playlist.Description.Trim();
-            playlist.PlaylistPictureURL = _doc.DocumentNode.SelectSingleNode("//*[@id=\"playlistsDetails\"]/div/article[1]/div/section[1]/img").Attributes["src"].Value;
+            playlist.PlaylistPictureURL = GetRightUrl(_doc.DocumentNode.SelectSingleNode("//*[@class='product-lockup']/div/div/picture/source").Attributes["srcset"].Value);
+            
 
-            var songNames = _doc.DocumentNode.SelectNodes("//*[@id=\"playlistsDetails\"]/div/article[2]/ol/li/div[2]/div[1]/a").ToList();
-            var artistNames = _doc.DocumentNode.SelectNodes("//*[@id=\"playlistsDetails\"]/div/article[2]/ol/li/div[2]/a").ToList();
-            var durations = _doc.DocumentNode.SelectNodes("//*[@id=\"playlistsDetails\"]/div/article[2]/ol/li/time").ToList();
+            var songNames = _doc.DocumentNode.SelectNodes("//*[@class = \"songs-list-row__song-name\"]").ToList();
+            var artistNames = _doc.DocumentNode.SelectNodes("//*[@role = 'row']//div[@class = 'songs-list-row__by-line']/span").ToList();
+            var durations = _doc.DocumentNode.SelectNodes("//*[@role = 'row']/div[5]/div[1]/time").ToList();
 
             int count = songNames.Count;
             List<Song> songs = new List<Song>();
@@ -39,12 +40,35 @@ namespace PlaylistParserApp.Services
                 songs.Add(new Song
                 {
                     SongName = songNames[i].InnerText,
-                    Author = artistNames[i].InnerText,
+                    Author = TrimInnerText(artistNames[i].InnerText),
                     Duration = durations[i].InnerText
                 });
             }
             playlist.Songs = songs;
             return playlist;
+        }
+
+        private string TrimInnerText(string nodeInnerText)
+        {
+            string[] words = nodeInnerText.Split(new char[] { ' ', '\n' }, StringSplitOptions.RemoveEmptyEntries);
+
+            return string.Join(" ", words);
+        }
+
+        private string GetRightUrl(string entryStringOfUrls)
+        {
+            string result = "Not Found";
+            string targetEnding = "400w";
+            string[] urls = entryStringOfUrls.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+            
+            foreach(string url in urls)
+            {
+                if (url.EndsWith(targetEnding))
+                {
+                    result = url.Substring(0,url.Length-targetEnding.Length);
+                }
+            }
+            return result;
         }
 
     }
