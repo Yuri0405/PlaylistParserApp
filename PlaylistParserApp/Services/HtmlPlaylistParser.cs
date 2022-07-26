@@ -22,28 +22,55 @@ namespace PlaylistParserApp.Services
         {
             _doc = _web.Load(url);
             Playlist playlist = new Playlist();
+
+            bool isPlaylist = IsPlaylist(url);
+
             playlist.PlaylistName = _doc.DocumentNode.SelectSingleNode("//*[@id='page-container__first-linked-element']").InnerText;
             playlist.Description = _doc.DocumentNode.SelectSingleNode("//*[@class='truncated-content-container']/span/p").InnerText;
             playlist.Description = playlist.Description.Trim();
             playlist.PlaylistPictureURL = GetRightUrl(_doc.DocumentNode.SelectSingleNode("//*[@class='product-lockup']/div/div/picture/source").Attributes["srcset"].Value);
+
+            List<HtmlNode> songNames;
+            List<HtmlNode> artistNames;
+            List<HtmlNode> durations;
+            HtmlNode author;
+
+            songNames = _doc.DocumentNode.SelectNodes("//*[@class = \"songs-list-row__song-name\"]").ToList();
+            //durations = _doc.DocumentNode.SelectNodes("//*[@role = 'row']/div[5]/div[1]/time").ToList();
             
+            List<Song> songs = new List<Song>(songNames.Count);
 
-            var songNames = _doc.DocumentNode.SelectNodes("//*[@class = \"songs-list-row__song-name\"]").ToList();
-            var artistNames = _doc.DocumentNode.SelectNodes("//*[@role = 'row']//div[@class = 'songs-list-row__by-line']/span").ToList();
-            var durations = _doc.DocumentNode.SelectNodes("//*[@role = 'row']/div[5]/div[1]/time").ToList();
-
-            int count = songNames.Count;
-            List<Song> songs = new List<Song>();
-
-            for (int i = 0; i < count; i++)
+            if (isPlaylist)
             {
-                songs.Add(new Song
+                artistNames = _doc.DocumentNode.SelectNodes("//*[@role = 'row']//div[@class = 'songs-list-row__by-line']/span").ToList();
+                durations = _doc.DocumentNode.SelectNodes("//*[@role = 'row']/div[5]/div[1]/time").ToList();
+
+                for (int i = 0; i < songNames.Count; i++)
                 {
-                    SongName = songNames[i].InnerText,
-                    Author = TrimInnerText(artistNames[i].InnerText),
-                    Duration = durations[i].InnerText
-                });
+                    songs.Add(new Song
+                    {
+                        SongName = songNames[i].InnerText.Trim(),
+                        Author = TrimInnerText(artistNames[i].InnerText),
+                        Duration = durations[i].InnerText.Trim()
+                    });
+                }
             }
+            else
+            {
+                author = _doc.DocumentNode.SelectSingleNode("//*[@class = 'product-creator typography-large-title']");
+                durations = _doc.DocumentNode.SelectNodes("//*[@class = 'songs-list-row__length']").ToList();
+
+                for (int i = 0; i < songNames.Count; i++)
+                {
+                    songs.Add(new Song
+                    {
+                        SongName = songNames[i].InnerText.Trim(),
+                        Author = TrimInnerText(author.InnerText),
+                        Duration = durations[i].InnerText.Trim()
+                    });
+                }
+            }
+
             playlist.Songs = songs;
             return playlist;
         }
@@ -58,18 +85,29 @@ namespace PlaylistParserApp.Services
         private string GetRightUrl(string entryStringOfUrls)
         {
             string result = "Not Found";
-            string targetEnding = "400w";
+            //string targetEnding = "400w";
             string[] urls = entryStringOfUrls.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             
             foreach(string url in urls)
             {
-                if (url.EndsWith(targetEnding))
+                if (url.EndsWith("400w") || url.EndsWith("600w"))
                 {
-                    result = url.Substring(0,url.Length-targetEnding.Length);
+                    result = url.Substring(0,url.Length-4);
                 }
             }
             return result;
         }
+
+        private bool IsPlaylist( string url)
+        {
+            int result = url.IndexOf("playlist");
+
+            if(result != -1 && result != 0)
+                return true;
+            return false;
+        }
+
+        
 
     }
 }

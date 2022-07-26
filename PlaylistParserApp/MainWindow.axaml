@@ -26,9 +26,7 @@
 				<Image Width="100" Height="100" Source="{Binding PlaylistCover}"/>
 				<StackPanel Orientation="Vertical" DataContext="{Binding PlayList}">
 					<Label Content="{Binding Path= PlaylistName}" FontSize="20"/>
-					<Label>
-						<TextBlock Text="{Binding Path= Description}" TextWrapping="Wrap"/>
-					</Label>
+					<TextBlock Text="{Binding Path= Description}" TextAlignment="Left" TextWrapping="Wrap"/>
 				</StackPanel>
 			</StackPanel>
 			<Grid>
