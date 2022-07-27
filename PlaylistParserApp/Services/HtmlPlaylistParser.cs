@@ -27,6 +27,7 @@ namespace PlaylistParserApp.Services
 
             playlist.PlaylistName = _doc.DocumentNode.SelectSingleNode("//*[@id='page-container__first-linked-element']").InnerText;
             playlist.Description = _doc.DocumentNode.SelectSingleNode("//*[@class='truncated-content-container']/span/p").InnerText;
+            playlist.PlaylistName = playlist.PlaylistName.Trim();
             playlist.Description = playlist.Description.Trim();
             playlist.PlaylistPictureURL = GetRightUrl(_doc.DocumentNode.SelectSingleNode("//*[@class='product-lockup']/div/div/picture/source").Attributes["srcset"].Value);
 
@@ -36,7 +37,6 @@ namespace PlaylistParserApp.Services
             HtmlNode author;
 
             songNames = _doc.DocumentNode.SelectNodes("//*[@class = \"songs-list-row__song-name\"]").ToList();
-            //durations = _doc.DocumentNode.SelectNodes("//*[@role = 'row']/div[5]/div[1]/time").ToList();
             
             List<Song> songs = new List<Song>(songNames.Count);
 
@@ -85,7 +85,6 @@ namespace PlaylistParserApp.Services
         private string GetRightUrl(string entryStringOfUrls)
         {
             string result = "Not Found";
-            //string targetEnding = "400w";
             string[] urls = entryStringOfUrls.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
             
             foreach(string url in urls)
