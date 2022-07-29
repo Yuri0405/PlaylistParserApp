@@ -42,10 +42,12 @@
 					<ColumnDefinition/>
 					<ColumnDefinition/>
 					<ColumnDefinition/>
+					<ColumnDefinition/>
 				</Grid.ColumnDefinitions>
 				<Label Content="Song Name" Grid.Column="0"/>
 				<Label Content="Author" Grid.Column="1" Margin="30,0,0,0"/>
-				<Label Content="Duration" Grid.Column="2" Margin="30,0,0,0"/>
+				<Label Content="Album" Grid.Column="2" Margin="30,0,0,0"/>
+				<Label Content="Duration" Grid.Column="3" Margin="30,0,0,0"/>
 			</Grid>
 			<ListBox Items="{Binding PlayList.Songs}">
 				<ListBox.ItemTemplate>
@@ -55,10 +57,12 @@
 								<ColumnDefinition/>
 								<ColumnDefinition/>
 								<ColumnDefinition/>
+								<ColumnDefinition/>
 							</Grid.ColumnDefinitions>
-							<TextBlock Text="{Binding Path=SongName}" Grid.Column="0"/>
-							<TextBlock Text="{Binding Path=Author}" Margin="30,0,0,0" Grid.Column="1"/>
-							<TextBlock Text="{Binding Path=Duration}" Margin="30,0,0,0" Grid.Column="2"/>
+							<TextBlock Text="{Binding Path=SongName}" Grid.Column="0" HorizontalAlignment="Left"/>
+							<TextBlock Text="{Binding Path=Author}" Margin="30,0,0,0" Grid.Column="1" HorizontalAlignment="Left"/>
+							<TextBlock Text="{Binding Path=AlbumName}" Margin="30,0,0,0" Grid.Column="2" HorizontalAlignment="Left"/>
+							<TextBlock Text="{Binding Path=Duration}" Margin="30,0,0,0" Grid.Column="3" HorizontalAlignment="Left"/>
 						</Grid>
 					</DataTemplate>
 				</ListBox.ItemTemplate>

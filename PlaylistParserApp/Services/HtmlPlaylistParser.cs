@@ -44,6 +44,7 @@ namespace PlaylistParserApp.Services
             {
                 artistNames = _doc.DocumentNode.SelectNodes("//*[@role = 'row']//div[@class = 'songs-list-row__by-line']/span").ToList();
                 durations = _doc.DocumentNode.SelectNodes("//*[@role = 'row']/div[5]/div[1]/time").ToList();
+                List<HtmlNode> albums = _doc.DocumentNode.SelectNodes("//*[@class = 'songs-list__col songs-list__col--album typography-body']").ToList();
 
                 for (int i = 0; i < songNames.Count; i++)
                 {
@@ -51,6 +52,7 @@ namespace PlaylistParserApp.Services
                     {
                         SongName = songNames[i].InnerText.Trim(),
                         Author = TrimInnerText(artistNames[i].InnerText),
+                        AlbumName = albums[i].InnerText.Trim(),
                         Duration = durations[i].InnerText.Trim()
                     });
                 }
@@ -66,6 +68,7 @@ namespace PlaylistParserApp.Services
                     {
                         SongName = songNames[i].InnerText.Trim(),
                         Author = TrimInnerText(author.InnerText),
+                        AlbumName = playlist.PlaylistName,
                         Duration = durations[i].InnerText.Trim()
                     });
                 }
@@ -81,7 +84,7 @@ namespace PlaylistParserApp.Services
 
             return string.Join(" ", words);
         }
-
+        //method for split array of image urls to get right one
         private string GetRightUrl(string entryStringOfUrls)
         {
             string result = "Not Found";
