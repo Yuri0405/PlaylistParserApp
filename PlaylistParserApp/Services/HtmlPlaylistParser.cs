@@ -26,9 +26,16 @@ namespace PlaylistParserApp.Services
             bool isPlaylist = IsPlaylist(url);
 
             playlist.PlaylistName = _doc.DocumentNode.SelectSingleNode("//*[@id='page-container__first-linked-element']").InnerText;
-            playlist.Description = _doc.DocumentNode.SelectSingleNode("//*[@class='truncated-content-container']/span/p").InnerText;
             playlist.PlaylistName = playlist.PlaylistName.Trim();
-            playlist.Description = playlist.Description.Trim();
+            try
+            {
+                playlist.Description = _doc.DocumentNode.SelectSingleNode("//*[@class='truncated-content-container']/span/p").InnerText;
+                playlist.Description = playlist.Description.Trim();
+            }
+            catch(NullReferenceException)
+            {
+                playlist.Description = null;
+            }
             playlist.PlaylistPictureURL = GetRightUrl(_doc.DocumentNode.SelectSingleNode("//*[@class='product-lockup']/div/div/picture/source").Attributes["srcset"].Value);
 
             List<HtmlNode> songNames;
